@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- 	sql映射文件 
+  	namespace 要映射的接口的全类名
+  	id 要实现的方法名
+  	resultType 返回值类型 值为全类名
+  -->
+ 
+<mapper namespace="com.wx.dao.UserDao">
+	<!-- 使用第三方缓存框架 -->
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
+	
+  <select id="checkLoginDao"  resultType="com.wx.pojo.User" useCache="false">
+  
+    	select * from t_user where account=#{account} and pwd=#{pwd}
+  </select>
+  <select id="selUserPwdDao" resultType="string">
+  		select pwd from t_user where account=#{account}
+  </select>
+ 	<update id="updataUserPwdDao">
+ 		update  t_user set pwd=#{pwd} where account=#{account}
+ 	</update>
+  <insert id="regDao">
+  	insert into t_user values(#{account},#{pwd},#{nickname},#{age},#{sex},#{birth},#{online})
+  </insert>
+	<update id="updateUserInfoDao">
+		update t_user 
+		<set>
+			<if test="nickname!=null">
+				nickname = #{nickname}
+			</if>
+			<if test="age!=null">
+				age = #{age}
+			</if>
+			<if test="sex!=null">
+				sex = #{sex}
+			</if>
+			<if test="birth!=null">
+				birth = #{birth}
+			</if>
+		</set>
+		<where>
+			account = #{account}
+		</where>
+	</update>
+	<update id="updatUserOnlineFlagDao">
+		update t_user set online=#{flag} 
+		<if test="account != null or !account.equals(&quot;&quot;)">
+			<where>
+				account = #{account}
+			</where>
+		</if>
+	</update>
+</mapper>

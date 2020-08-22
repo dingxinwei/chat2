@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- 	sql映射文件 
+  	namespace 要映射的接口的全类名
+  	id 要实现的方法名
+  	resultType 返回值类型 值为全类名
+  -->
+  <mapper namespace="com.wx.dao.QChatDao">
+  <cache-ref namespace="com.wx.dao.UserDao"/>
+  	<select id="selQChatUserInfoByNicknameDao" resultMap="selAllQ">
+  		select qaccount,qnickname from t_qchat where qname = #{qName} and qnickname like #{nickname}
+  	</select>
+  	<select id="selAllQChatByQNameDao" resultMap="selAccAndNickname">
+		select qaccount,qnickname from t_qchat where qname = #{qName}
+	</select>
+	<insert id="createQChatDao">
+		insert into t_qchat(qname,qaccount,qflag) values(#{qname},#{qaccount},#{qflag})
+	</insert>
+	<select id="selAllQByAccountDao" resultMap="selAllQ">
+		select * from t_qchat where qaccount=#{account}
+	</select>
+	<resultMap type="com.wx.pojo.QChat" id="selAccAndNickname">
+		<id property="qAccount" column="qaccount"/>
+		<result property="qNickname" column="qnickname"/>
+	</resultMap>
+	<resultMap type="com.wx.pojo.QChat" id="selAllQ">
+		<id property="qAccount" column="qaccount"/>
+		<id property="qName" column="qname"/>
+		
+		<result property="qNote" column="qnote"/>
+		<result property="qFlag" column="qflag"/>
+		<result property="qNickname" column="qnickname"/>
+	</resultMap>
+	<insert id="insertQChatDao">
+		insert into t_qchat(qname,qaccount,qflag) values(#{qname},#{qAccount},#{qflag})
+	</insert>
+	<update id="updataQNameDao">
+		update t_qchat set qname=#{newQname} where qname = #{oldQname}
+	
+	</update>
+	<update id="updateQNoteDao">
+		update t_qchat set qnote=#{note} where qname = #{Qname}
+	
+	</update>
+	<update id="updateQNicknameDao">
+		update t_qchat set qnickname=#{nickname} where qname = #{qname} and qaccount = #{account}
+	</update>
+	<delete id="deleteQDao">
+		delete from t_qchat where qname = #{qName} and qaccount = #{qAccount}
+	</delete>
+  </mapper>

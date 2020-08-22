@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- 	sql映射文件 
+  	namespace 要映射的接口的全类名
+  	id 要实现的方法名
+  	resultType 返回值类型 值为全类名
+  -->
+ 
+<mapper namespace="com.wx.dao.FriendDao">
+	<cache-ref namespace="com.wx.dao.UserDao"/>
+ 	 <select id="selUserDao"  resultType="com.wx.pojo.User" useCache="false">
+    	select account,nickname,age,sex,birth,online from t_user where account=#{account}
+ 	</select>
+	<insert id="addFriendDao">
+		insert into t_friend(account,faccount) values(#{account},#{fAccount})
+	</insert>
+	
+	<update id="updateFriendNoteDao">
+		update t_friend set notes=#{note} 
+		where account=#{account} and faccount=#{faccount}
+	
+	</update>
+	<select id="selAllFriendsDao"  resultMap="friendMap" useCache="false">
+	    select u.*,f.account 'own',f.notes from t_friend f join t_user u 
+	    on f.faccount=u.account where f.account=#{account};
+ 	</select>
+ 	<resultMap type="com.wx.pojo.Friends" id="friendMap">
+ 		<id property="account" column="own"/>
+ 		
+ 		<collection property="friends" ofType="com.wx.pojo.User">
+ 			<id property="account" column="account"/>
+ 			<result property="age" column="age"/>
+ 			<result property="birth" column="birth"/>
+ 			<result property="nickname" column="nickname"/>
+ 			<result property="sex" column="sex"/>
+ 			<result property="notes" column="notes"/>
+ 			<result property="online" column="online"/>
+ 		</collection>
+ 	
+ 	</resultMap>
+ 	<delete id="deleteFriendDao">
+ 		delete from t_friend where account=#{account} 
+ 		and faccount=#{faccount};
+ 		
+ 	</delete>
+ 	<select id="selAllQAccountByQName" resultMap="selAllQAccount">
+ 		select * from t_qchat where qname = #{qname}
+ 	</select>
+ 	<resultMap type="com.wx.pojo.QChat" id="selAllQAccount">
+ 		<id property="qAccount" column="qaccount"/>
+		<id property="qName" column="qname"/>
+		<result property="qNote" column="qnote"/>
+		<result property="qFlag" column="qflag"/>
+		<result property="qNickname" column="qnickname"/>
+ 	
+ 	</resultMap>
+ 	<select id="selAllFriendsByNicknameDao"  resultMap="friendMap">
+	    select u.*,f.account 'own',f.notes from t_friend f join t_user u 
+	    on f.faccount=u.account where f.account = #{account} and u.nickname like #{name};
+ 	</select>
+</mapper>
